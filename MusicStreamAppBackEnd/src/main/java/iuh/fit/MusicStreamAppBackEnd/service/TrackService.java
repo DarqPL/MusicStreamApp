@@ -65,7 +65,7 @@ public class TrackService {
 
             // 3. UPLOAD LÊN CLOUDINARY
             // Dùng file.getBytes() để tránh phải đọc lại file tạm
-            fileUrl = fileStorageService.uploadAudioFile(file.getBytes());
+            fileUrl = fileStorageService.uploadAudioFile(file.getBytes(), file.getOriginalFilename());
 
         } catch (IOException | UnsupportedTagException | InvalidDataException e) {
             throw new RuntimeException("Lỗi khi xử lý file: " + e.getMessage());
