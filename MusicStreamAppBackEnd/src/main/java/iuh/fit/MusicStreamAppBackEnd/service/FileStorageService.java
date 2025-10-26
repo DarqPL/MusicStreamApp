@@ -13,10 +13,13 @@ public class FileStorageService {
     @Autowired
     private Cloudinary cloudinary;
 
-    // Thay MultipartFile thành byte[]
-    public String uploadAudioFile(byte[] fileBytes) throws IOException {
-        Map params = ObjectUtils.asMap(
-                "resource_type", "video"
+    public String uploadAudioFile(byte[] fileBytes, String originalFilename) throws IOException {
+        // Gửi kèm metadata để Cloudinary giữ tên gốc
+        Map<String, Object> params = ObjectUtils.asMap(
+                "resource_type", "video",  // Cloudinary dùng "video" cho audio files
+                "use_filename", true,      // Giữ nguyên tên gốc
+                "unique_filename", false,  // Không random thêm hậu tố
+                "folder", "music_uploads"  // (tuỳ chọn) gom file vào thư mục
         );
 
         Map uploadResult = cloudinary.uploader().upload(fileBytes, params);
