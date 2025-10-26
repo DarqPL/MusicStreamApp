@@ -102,11 +102,21 @@ public class TrackService {
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
-        // Tạo một file tạm trong thư mục tạm của hệ thống
-        File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + Objects.requireNonNull(file.getOriginalFilename()));
+        String originalName = Objects.requireNonNull(file.getOriginalFilename());
+
+        // 1️⃣ Chuyển về dạng không dấu, bỏ ký tự lạ để tránh lỗi encode
+        String safeName = java.text.Normalizer
+                .normalize(originalName, java.text.Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "")
+                .replaceAll("[^a-zA-Z0-9\\.\\-_]", "_");
+
+        // 2️⃣ Tạo file tạm với tên an toàn
+        File convFile = new File(System.getProperty("java.io.tmpdir"), safeName);
+
         try (FileOutputStream fos = new FileOutputStream(convFile)) {
             fos.write(file.getBytes());
         }
+
         return convFile;
     }
 
